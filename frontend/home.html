@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blogify</title>
+</head>
+<body>
+
+  <h1>Blogify 🚀</h1>
+
+  <!-- Create Blog Section -->
+  <div id="createBlogSection"></div>
+
+  <hr>
+
+  <!-- Blog List -->
+  <h2>All Blogs</h2>
+  <div id="blogs"></div>
+
+  <script>
+    const token = localStorage.getItem('token');
+
+    const createSection = document.getElementById('createBlogSection');
+
+    // 🔐 Show UI based on login
+    if (token) {
+      createSection.innerHTML = `
+        <textarea id="content" placeholder="Write your blog..."></textarea><br>
+        <button onclick="createBlog()">Create Blog</button>
+      `;
+    } else {
+      createSection.innerHTML = `
+        <p>Please login to create a blog</p>
+        <a href="login.html">Login</a>
+      `;
+    }
+
+    // 📝 Create Blog
+    function createBlog() {
+      const content = document.getElementById('content').value;
+
+      fetch('http://localhost:3000/api/blogs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({ content })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert('Blog created');
+        loadBlogs();
+      });
+    }
+
+    // 📊 Load Blogs
+    function loadBlogs() {
+      fetch('http://localhost:3000/api/blogs')
+        .then(res => res.json())
+        .then(data => {
+          const blogDiv = document.getElementById('blogs');
+          blogDiv.innerHTML = '';
+
+          data.forEach(blog => {
+            blogDiv.innerHTML += `
+              <div>
+                <p>${blog.content}</p>
+                <hr>
+              </div>
+            `;
+          });
+        });
+    }
+
+    loadBlogs();
+  </script>
+
+</body>
+</html>
