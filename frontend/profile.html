@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Blogify</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h1 class="logo">🚀 Blogify</h1>
+      <div class="nav-links">
+        <a href="home.html" class="nav-item">Home</a>
+        <a href="my-blogs.html" class="nav-item">My Blogs</a>
+        <a href="analytics.html" class="nav-item">Analytics</a>
+        <a href="profile.html" class="nav-item active">Profile</a>
+        <button class="btn-logout" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="profile-container" id="profileContainer"></div>
+  </div>
+
+  <style>
+    .profile-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #ecf0f1;
+      padding-bottom: 1.5rem;
+    }
+
+    .profile-header h1 {
+      color: #2c3e50;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .profile-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .profile-field label {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .profile-field span {
+      color: #7f8c8d;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      justify-content: center;
+    }
+  </style>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username');
+
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    async function loadProfile() {
+      try {
+        const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const user = await response.json();
+
+        document.getElementById('profileContainer').innerHTML = `
+          <div class="profile-header">
+            <h1>${user.username}</h1>
+            <p>Member since ${new Date(user.createdAt).toLocaleDateString()}</p>
+          </div>
+          <div class="profile-info">
+            <div class="profile-field">
+              <label>Username</label>
+              <span>${user.username}</span>
+            </div>
+            <div class="profile-field">
+              <label>Email</label>
+              <span>${user.email}</span>
+            </div>
+            <div class="profile-field">
+              <label>Blogs Created</label>
+              <span>${user.blogsCount || 0}</span>
+            </div>
+            <div class="profile-field">
+              <label>Total Views</label>
+              <span>${user.totalViews || 0}</span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-primary" onclick="editProfile()">Edit Profile</button>
+            <button class="btn-secondary" onclick="changePassword()">Change Password</button>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    }
+
+    function editProfile() {
+      alert('Edit profile feature coming soon!');
+    }
+
+    function changePassword() {
+      alert('Change password feature coming soon!');
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.clear();
+      window.location.href = 'home.html';
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
