@@ -2,79 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blogify</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Blogify</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h1 class="logo">🚀 Blogify</h1>
+      <div class="nav-links" id="navLinks">
+        <a href="home.html" class="nav-item active">Home</a>
+        <a href="my-blogs.html" class="nav-item" id="myBlogsLink">My Blogs</a>
+        <a href="analytics.html" class="nav-item" id="analyticsLink">Analytics</a>
+        <a href="profile.html" class="nav-item" id="profileLink">Profile</a>
+        <button class="btn-logout" id="logoutBtn" style="display:none;">Logout</button>
+      </div>
+    </div>
+  </nav>
 
-  <h1>Blogify 🚀</h1>
+  <div class="container">
+    <!-- Create Blog Section -->
+    <section id="createBlogSection" class="create-blog-section">
+      <div id="createBlogContent"></div>
+    </section>
 
-  <!-- Create Blog Section -->
-  <div id="createBlogSection"></div>
+    <hr>
 
-  <hr>
+    <!-- Blog Feed Section -->
+    <section class="blog-feed">
+      <h2>📚 Blog Feed</h2>
+      <div id="blogs" class="blogs-container"></div>
+    </section>
+  </div>
 
-  <!-- Blog List -->
-  <h2>All Blogs</h2>
-  <div id="blogs"></div>
-
-  <script>
-    const token = localStorage.getItem('token');
-
-    const createSection = document.getElementById('createBlogSection');
-
-    // 🔐 Show UI based on login
-    if (token) {
-      createSection.innerHTML = `
-        <textarea id="content" placeholder="Write your blog..."></textarea><br>
-        <button onclick="createBlog()">Create Blog</button>
-      `;
-    } else {
-      createSection.innerHTML = `
-        <p>Please login to create a blog</p>
-        <a href="login.html">Login</a>
-      `;
-    }
-
-    // 📝 Create Blog
-    function createBlog() {
-      const content = document.getElementById('content').value;
-
-      fetch('http://localhost:3000/api/blogs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-        body: JSON.stringify({ content })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert('Blog created');
-        loadBlogs();
-      });
-    }
-
-    // 📊 Load Blogs
-    function loadBlogs() {
-      fetch('http://localhost:3000/api/blogs')
-        .then(res => res.json())
-        .then(data => {
-          const blogDiv = document.getElementById('blogs');
-          blogDiv.innerHTML = '';
-
-          data.forEach(blog => {
-            blogDiv.innerHTML += `
-              <div>
-                <p>${blog.content}</p>
-                <hr>
-              </div>
-            `;
-          });
-        });
-    }
-
-    loadBlogs();
-  </script>
-
+  <script src="home.js"></script>
 </body>
 </html>
